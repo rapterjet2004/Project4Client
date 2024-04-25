@@ -14,6 +14,8 @@ public class Client extends Thread{
 	
 	ObjectOutputStream out;
 	ObjectInputStream in;
+
+	boolean isTurn;
 	
 	private Consumer<Serializable> callback;
 	
