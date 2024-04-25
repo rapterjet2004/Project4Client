@@ -27,6 +27,10 @@ public class GuiClient extends Application{
 
 	ShipType type;
 
+	String yTurn = "Your Turn";
+	String tTurn = "Their Turn";
+	Text myTurn = new Text("Set up");
+
 	Text carrierText;
 	Text destroyerText;
 	Text patrolText;
@@ -115,7 +119,13 @@ public class GuiClient extends Application{
 					}else{
 						String msg = data.toString();
 						if (msg.equals("turn")) {
-							// TODO CHANGE UI TO INDICATE PLAYER TURN
+							myTurn.setText(yTurn);
+							carrier.setVisible(false);
+							patrol.setVisible(false);
+							destroyer.setVisible(false);
+
+						} else {
+							myTurn.setText(tTurn);
 						}
 					}
 
@@ -201,7 +211,7 @@ public class GuiClient extends Application{
 		b1.setAlignment(Pos.BOTTOM_CENTER);
 		b1.setBackground(new Background(new BackgroundFill(Color.LIGHTGREEN, new CornerRadii(0), null)));
 		b1.setPadding(new Insets(10));
-		VBox vbox = new VBox(carrier, destroyer, patrol, t, new HBox(Ai, Player), b1);
+		VBox vbox = new VBox(myTurn, carrier, destroyer, patrol, t, new HBox(Ai, Player), b1);
 		vbox.setSpacing(20);
 		vbox.setPadding(new Insets(50));
 		vbox.setBackground(new Background(new BackgroundFill(Color.LIGHTGRAY, new CornerRadii(10), new Insets(10))));
