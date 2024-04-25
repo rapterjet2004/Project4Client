@@ -118,14 +118,20 @@ public class GuiClient extends Application{
 						Message dataObj = (Message)data;
 					}else{
 						String msg = data.toString();
-						if (msg.equals("turn")) {
-							myTurn.setText(yTurn);
-							carrier.setVisible(false);
-							patrol.setVisible(false);
-							destroyer.setVisible(false);
-
-						} else {
-							myTurn.setText(tTurn);
+						switch (msg) {
+							case "turn": {
+								myTurn.setText(yTurn);
+								carrier.setVisible(false);
+								patrol.setVisible(false);
+								destroyer.setVisible(false);
+								break;
+							}
+							case "wait": {
+								myTurn.setText(tTurn);
+								break;
+							}
+							default:
+								break;
 						}
 					}
 
