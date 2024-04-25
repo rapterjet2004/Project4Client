@@ -16,6 +16,8 @@ import javafx.util.Pair;
 
 import java.util.ArrayList;
 
+import static java.lang.Integer.parseInt;
+
 public class GuiClient extends Application{
 
 	private enum ShipType {
@@ -143,15 +145,42 @@ public class GuiClient extends Application{
 
 						if (msg.contains("hit")) {
 							// TODO get the pair and set it to red on right
+//							System.out.println("X:"+msg.substring(3, ','));
+//							System.out.println("Y:"+msg.substring(','));
+							int x = parseInt(msg.substring(3, msg.indexOf(',')));
+							int y = parseInt(msg.substring(msg.indexOf(',')+1));
+							System.out.println("X:"+x);
+							System.out.println("Y:"+y);
+							((Button)gridPaneArray2[x][y]).setBackground(hitBg);
+							((Button)gridPaneArray2[x][y]).setBorder(hitBr);
+
 						}
 						if (msg.contains("miss")) {
 							// TODO get the pair and set it to white on right
+							int x = parseInt(msg.substring(4, msg.indexOf(',')));
+							int y = parseInt(msg.substring(msg.indexOf(',')+1));
+							System.out.println("X:"+x);
+							System.out.println("Y:"+y);
+							((Button)gridPaneArray2[x][y]).setBackground(missBg);
+							((Button)gridPaneArray2[x][y]).setBorder(missBr);
 						}
-						if (msg.contains("hitO")) {
+						if (msg.contains("hO")) {
 							// TODO get the pair and set it on red on left
+							int x = parseInt(msg.substring(2, msg.indexOf(',')));
+							int y = parseInt(msg.substring(msg.indexOf(',')+1));
+							System.out.println("X:"+x);
+							System.out.println("Y:"+y);
+							((Button)gridPaneArray[x][y]).setBackground(hitBg);
+							((Button)gridPaneArray[x][y]).setBorder(hitBr);
 						}
-						if (msg.contains("missO")) {
+						if (msg.contains("mO")) {
 							// TODO get the pair and set it white on the left
+							int x = parseInt(msg.substring(2, msg.indexOf(',')));
+							int y = parseInt(msg.substring(msg.indexOf(',')+1));
+							System.out.println("X:"+x);
+							System.out.println("Y:"+y);
+							((Button)gridPaneArray[x][y]).setBackground(missBg);
+							((Button)gridPaneArray[x][y]).setBorder(missBr);
 						}
 					}
 
@@ -164,7 +193,8 @@ public class GuiClient extends Application{
 		b1.setOnAction(e->{
 //			clientConnection.send(c1.getText()); c1.clear();
 			send = new Message();
-//			send.updateBoats = boats;
+			send.updateBoats = true;
+			send.updateBoat = boats;
 			send.isUsername = true;
 			send.msg = tt.getText();
 			clientConnection.send(send);
@@ -243,7 +273,7 @@ public class GuiClient extends Application{
 
 		shoot = new Button("Shoot");
 		shoot.setOnAction(e -> {
-			Message send = new Message();
+			send = new Message();
 			send.isAttacking = true;
 			send.attackCoord = selected;
 			clientConnection.send(send);
@@ -299,7 +329,9 @@ public class GuiClient extends Application{
 				int finalR = r;
 				int finalC = c;
 				button.setOnAction(e -> {
+					System.out.println("Row" + finalR + " " + "Column "+finalC);
 					selected = new Pair<>(finalR, finalC);
+
 					updateSelectionUI();
 				});
 				grid2.add(button, c, r);
@@ -317,6 +349,7 @@ public class GuiClient extends Application{
 			for (int c = 0; c < 10; c++) {
 				if (selected.getKey() == r && selected.getValue() == c) {
 					((Button) gridPaneArray2[r][c]).setBorder(selectedBr);
+					System.out.println("Row" + r + " " + "Column "+c);
 				} else {
 					((Button) gridPaneArray2[r][c]).setBorder(gridBorder);
 				}

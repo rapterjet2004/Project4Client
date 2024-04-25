@@ -1,8 +1,9 @@
 import javafx.util.Pair;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 
-public class Boat {
+public class Boat implements Serializable {
 
     int lives;
     ArrayList<Pair<Integer, Integer>> coords = new ArrayList<>();
