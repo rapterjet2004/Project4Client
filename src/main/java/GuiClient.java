@@ -55,6 +55,7 @@ public class GuiClient extends Application{
 
 	Pair<Integer, Integer> selected;
 
+	Button shoot;
 
 	Client clientConnection;
 	Button b1;
@@ -128,10 +129,12 @@ public class GuiClient extends Application{
 								carrier.setVisible(false);
 								patrol.setVisible(false);
 								destroyer.setVisible(false);
+								shoot.setVisible(true);
 								break;
 							}
 							case "wait": {
 								myTurn.setText(tTurn);
+								shoot.setVisible(false);
 								break;
 							}
 							default:
@@ -225,9 +228,18 @@ public class GuiClient extends Application{
 		b1.setBackground(new Background(new BackgroundFill(Color.LIGHTGREEN, new CornerRadii(0), null)));
 		b1.setPadding(new Insets(10));
 
+		shoot = new Button("Shoot");
+		shoot.setOnAction(e -> {
+			Message send = new Message();
+			send.isAttacking = true;
+			send.attackCoord = selected;
+			clientConnection.send(send);
+		});
+		shoot.setVisible(false);
+
 		tt = new TextField();
 		tt.setPromptText("Username");
-		VBox vbox = new VBox(myTurn, carrier, destroyer, patrol, t, new HBox(Ai, Player), tt, b1);
+		VBox vbox = new VBox(myTurn, carrier, destroyer, patrol, t, new HBox(Ai, Player), tt, shoot, b1);
 		vbox.setSpacing(20);
 		vbox.setPadding(new Insets(50));
 		vbox.setBackground(new Background(new BackgroundFill(Color.LIGHTGRAY, new CornerRadii(10), new Insets(10))));
