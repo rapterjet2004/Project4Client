@@ -140,6 +140,19 @@ public class GuiClient extends Application{
 							default:
 								break;
 						}
+
+						if (msg.contains("hit")) {
+							// TODO get the pair and set it to red on right
+						}
+						if (msg.contains("miss")) {
+							// TODO get the pair and set it to white on right
+						}
+						if (msg.contains("hitO")) {
+							// TODO get the pair and set it on red on left
+						}
+						if (msg.contains("missO")) {
+							// TODO get the pair and set it white on the left
+						}
 					}
 
 //					listItems2.getItems().add(data.toString());
