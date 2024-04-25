@@ -6,6 +6,7 @@ import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.TextField;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
@@ -49,6 +50,8 @@ public class GuiClient extends Application{
 	private Node[][] gridPaneArray2 = null;
 
 	Message send;
+	TextField tt;
+
 
 	Pair<Integer, Integer> selected;
 
@@ -148,6 +151,7 @@ public class GuiClient extends Application{
 //			send = new Message();
 //			send.updateBoats = boats;
 //			clientConnection.send(send);
+//			send.msg = tt.getText();
 			b1.setVisible(false);
 		});
 		
@@ -218,7 +222,10 @@ public class GuiClient extends Application{
 		b1.setAlignment(Pos.BOTTOM_CENTER);
 		b1.setBackground(new Background(new BackgroundFill(Color.LIGHTGREEN, new CornerRadii(0), null)));
 		b1.setPadding(new Insets(10));
-		VBox vbox = new VBox(myTurn, carrier, destroyer, patrol, t, new HBox(Ai, Player), b1);
+
+		tt = new TextField();
+		tt.setPromptText("Username");
+		VBox vbox = new VBox(myTurn, carrier, destroyer, patrol, t, new HBox(Ai, Player), tt, b1);
 		vbox.setSpacing(20);
 		vbox.setPadding(new Insets(50));
 		vbox.setBackground(new Background(new BackgroundFill(Color.LIGHTGRAY, new CornerRadii(10), new Insets(10))));
