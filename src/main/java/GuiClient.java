@@ -44,6 +44,8 @@ public class GuiClient extends Application{
 	private Node[][] gridPaneArray = null;
 	private Node[][] gridPaneArray2 = null;
 
+	Message send;
+
 	Pair<Integer, Integer> selected;
 
 
@@ -108,6 +110,15 @@ public class GuiClient extends Application{
 	public void start(Stage primaryStage) throws Exception {
 		clientConnection = new Client(data->{
 				Platform.runLater(()->{
+					if (data instanceof Message){
+						Message dataObj = (Message)data;
+					}else{
+						String msg = data.toString();
+						if (msg.equals("turn")) {
+							// TODO CHANGE UI TO INDICATE PLAYER TURN
+						}
+					}
+
 //					listItems2.getItems().add(data.toString());
 			});
 		});
@@ -116,6 +127,12 @@ public class GuiClient extends Application{
 		b1 = new Button("submit");
 		b1.setOnAction(e->{
 //			clientConnection.send(c1.getText()); c1.clear();
+			clientConnection.send("matchmake");
+			send = new Message();
+			send.updateBoats = boats;
+			send.isPlacingShips = true;
+//			clientConnection.send(send);
+			b1.setVisible(false);
 		});
 		
 		primaryStage.setOnCloseRequest(new EventHandler<WindowEvent>() {
@@ -177,6 +194,7 @@ public class GuiClient extends Application{
 		Player.setPadding(new Insets(10));
 		Player.setOnAction(e -> {
 			isPlayer = true;
+			clientConnection.send("");
 			Player.setBorder(selectedBr);
 			Ai.setBorder(null);
 		});

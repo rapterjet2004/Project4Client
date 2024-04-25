@@ -1,5 +1,7 @@
 
 import java.io.Serializable;
+import java.util.ArrayList;
+
 import javafx.util.Pair;
 
 
@@ -9,17 +11,17 @@ public class Message implements Serializable {
     boolean isPlacingShips = false;
     boolean isAttacking = false;
     boolean didHit = false;
-    int[][] updateGrid;
+    ArrayList<Boat> updateBoats;
     Pair<Integer,Integer> attackCoord;
 
 
-    public void setUpdateGrid(int[][] updatedGrid){
-        updateGrid = updatedGrid;
+    public void setUpdateBoats(ArrayList<Boat> t){
+        updateBoats = t;
 
     }
 
-    public int[][] getUpdateGrid(){
-        return updateGrid;
+    public ArrayList<Boat> getUpdateBoats(){
+        return updateBoats;
     }
 
     public void setAttackCoord(Pair<Integer,Integer> coords){

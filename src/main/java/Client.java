@@ -15,6 +15,8 @@ public class Client extends Thread{
 	ObjectOutputStream out;
 	ObjectInputStream in;
 
+
+
 	boolean isTurn;
 	
 	private Consumer<Serializable> callback;
@@ -37,16 +39,38 @@ public class Client extends Thread{
 		while(true) {
 			 
 			try {
-			String message = in.readObject().toString();
-			callback.accept(message);
+			Object data = in.readObject();
+			if (data instanceof Message){
+				Message dataObj = (Message)data;
+				callback.accept(dataObj);
+				}else{
+				String msg = data.toString();
+				if (msg.equals("turn")) {
+					System.out.println("MY TURN");
+					isTurn = true;
+					callback.accept(msg);
+				}
+			}
 			}
 			catch(Exception e) {}
+
+
 		}
 	
     }
 	
 	public void send(String data) {
 		
+		try {
+			out.writeObject(data);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+
+	public void send(Message data) {
+
 		try {
 			out.writeObject(data);
 		} catch (IOException e) {
