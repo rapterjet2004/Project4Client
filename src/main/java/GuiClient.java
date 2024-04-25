@@ -128,9 +128,8 @@ public class GuiClient extends Application{
 		b1.setOnAction(e->{
 //			clientConnection.send(c1.getText()); c1.clear();
 			clientConnection.send("matchmake");
-			send = new Message();
-			send.updateBoats = boats;
-			send.isPlacingShips = true;
+//			send = new Message();
+//			send.updateBoats = boats;
 //			clientConnection.send(send);
 			b1.setVisible(false);
 		});
