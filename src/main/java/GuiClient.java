@@ -118,6 +118,7 @@ public class GuiClient extends Application{
 						Message dataObj = (Message)data;
 					}else{
 						String msg = data.toString();
+						System.out.println(msg);
 						switch (msg) {
 							case "turn": {
 								myTurn.setText(yTurn);
@@ -209,7 +210,7 @@ public class GuiClient extends Application{
 		Player.setPadding(new Insets(10));
 		Player.setOnAction(e -> {
 			isPlayer = true;
-			clientConnection.send("");
+//			clientConnection.send("");
 			Player.setBorder(selectedBr);
 			Ai.setBorder(null);
 		});
