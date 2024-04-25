@@ -147,11 +147,13 @@ public class GuiClient extends Application{
 		b1 = new Button("submit");
 		b1.setOnAction(e->{
 //			clientConnection.send(c1.getText()); c1.clear();
-			clientConnection.send("matchmake");
-//			send = new Message();
+			send = new Message();
 //			send.updateBoats = boats;
-//			clientConnection.send(send);
-//			send.msg = tt.getText();
+			send.isUsername = true;
+			send.msg = tt.getText();
+			clientConnection.send(send);
+
+			clientConnection.send("matchmake");
 			b1.setVisible(false);
 		});
 		

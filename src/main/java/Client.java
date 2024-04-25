@@ -48,8 +48,9 @@ public class Client extends Thread{
 				if (msg.equals("turn")) {
 					System.out.println("MY TURN");
 					isTurn = true;
-					callback.accept(msg);
+
 				}
+				callback.accept(msg);
 			}
 			}
 			catch(Exception e) {}
