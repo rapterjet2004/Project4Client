@@ -44,6 +44,8 @@ public class GuiClient extends Application{
 	private Node[][] gridPaneArray = null;
 	private Node[][] gridPaneArray2 = null;
 
+	Pair<Integer, Integer> selected;
+
 
 	Client clientConnection;
 	Button b1;
@@ -56,9 +58,43 @@ public class GuiClient extends Application{
 							BorderStrokeStyle.SOLID,
 							CornerRadii.EMPTY,
 							BorderWidths.DEFAULT));
-	Background shipBg = new Background(new BackgroundFill(Color.DARKGRAY, null, null));
-	Border shipBr = new Border(
+	Background cBG = new Background(new BackgroundFill(Color.DARKGRAY, null, null));
+	Border cBR = new Border(
 			new BorderStroke(Color.DARKGRAY,
+					BorderStrokeStyle.SOLID,
+					CornerRadii.EMPTY,
+					BorderWidths.DEFAULT));
+
+	Background dBG = new Background(new BackgroundFill(Color.LIGHTGRAY, null, null));
+	Border dBR = new Border(
+			new BorderStroke(Color.LIGHTGRAY,
+					BorderStrokeStyle.SOLID,
+					CornerRadii.EMPTY,
+					BorderWidths.DEFAULT));
+
+	Background pBG = new Background(new BackgroundFill(Color.SANDYBROWN, null, null));
+	Border pBR = new Border(
+			new BorderStroke(Color.SANDYBROWN,
+					BorderStrokeStyle.SOLID,
+					CornerRadii.EMPTY,
+					BorderWidths.DEFAULT));
+
+	Background missBg = new Background(new BackgroundFill(Color.WHITE, null, null));
+	Border missBr = new Border(
+			new BorderStroke(Color.WHITE,
+					BorderStrokeStyle.SOLID,
+					CornerRadii.EMPTY,
+					BorderWidths.DEFAULT));
+
+	Background hitBg = new Background(new BackgroundFill(Color.RED, null, null));
+	Border hitBr = new Border(
+			new BorderStroke(Color.RED,
+					BorderStrokeStyle.SOLID,
+					CornerRadii.EMPTY,
+					BorderWidths.DEFAULT));
+
+	Border selectedBr = new Border(
+			new BorderStroke(Color.YELLOW,
 					BorderStrokeStyle.SOLID,
 					CornerRadii.EMPTY,
 					BorderWidths.DEFAULT));
@@ -130,12 +166,20 @@ public class GuiClient extends Application{
 		Ai = new Button("Ai");
 		Ai.setBackground(new Background(new BackgroundFill(Color.LIGHTGREEN, new CornerRadii(0), null)));
 		Ai.setPadding(new Insets(10));
-		Ai.setOnAction(e -> isPlayer = false);
+		Ai.setOnAction(e -> {
+			isPlayer = false;
+			Ai.setBorder(selectedBr);
+			Player.setBorder(null);
+		});
 
 		Player = new Button("Player");
 		Player.setBackground(new Background(new BackgroundFill(Color.LIGHTGREEN, new CornerRadii(0), null)));
 		Player.setPadding(new Insets(10));
-		Player.setOnAction(e -> isPlayer = true);
+		Player.setOnAction(e -> {
+			isPlayer = true;
+			Player.setBorder(selectedBr);
+			Ai.setBorder(null);
+		});
 
 		b1.setAlignment(Pos.BOTTOM_CENTER);
 		b1.setBackground(new Background(new BackgroundFill(Color.LIGHTGREEN, new CornerRadii(0), null)));
@@ -184,6 +228,12 @@ public class GuiClient extends Application{
 				Button button = new Button();
 				button.setBackground(null);
 				button.setBorder(gridBorder);
+				int finalR = r;
+				int finalC = c;
+				button.setOnAction(e -> {
+					selected = new Pair<>(finalR, finalC);
+					updateSelectionUI();
+				});
 				grid2.add(button, c, r);
 			}
 		}
@@ -192,6 +242,18 @@ public class GuiClient extends Application{
 		vbox.setPadding(new Insets(10));
 		vbox.setBackground(new Background(new BackgroundFill(Color.LIGHTBLUE, new CornerRadii(0), new Insets(10))));
 		return vbox;
+	}
+
+	private void updateSelectionUI() {
+		for (int r = 0; r < 10; r++) {
+			for (int c = 0; c < 10; c++) {
+				if (selected.getKey() == r && selected.getValue() == c) {
+					((Button) gridPaneArray2[r][c]).setBorder(selectedBr);
+				} else {
+					((Button) gridPaneArray2[r][c]).setBorder(gridBorder);
+				}
+			}
+		}
 	}
 
 	private void initializeGridPaneArray() {
@@ -209,30 +271,18 @@ public class GuiClient extends Application{
 	}
 
 	private void buildShip(int row, int col) {
-		// TODO add each ship to boats
 		switch (type) {
 			case CARRIER: {
 				buildCarrier(row, col);
-				numCarrier--;
-				carrierText = new Text("Carrier - " + numCarrier);
-				carrier.getChildren().clear();
-				carrier.getChildren().add(carrierText);
 				break;
 			}
 			case DESTROYER: {
 				buildDestroyer(row, col);
-				numDestroyer--;
-				destroyerText = new Text("Destroyer - " + numDestroyer);
-				destroyer.getChildren().clear();
-				destroyer.getChildren().add(destroyerText);
+
 				break;
 			}
 			case PATROL: {
 				buildPatrol(row, col);
-				numPatrol--;
-				patrolText = new Text("Patrol - " + numPatrol);
-				patrol.getChildren().clear();
-				patrol.getChildren().add(patrolText);
 				break;
 			}
 			default:
@@ -241,7 +291,7 @@ public class GuiClient extends Application{
 	}
 
 	private void buildCarrier(int row, int col) {
-		if (row <= 7 && col <= 8 && numCarrier > 0) {
+		if (row <= 7 && col <= 8 && numCarrier > 0 && checkBounds(row, col)) {
 			ArrayList<Pair<Integer, Integer>> list = new ArrayList<>();
 			list.add(new Pair<>(row, col));
 			list.add(new Pair<>(row, col + 1));
@@ -251,52 +301,81 @@ public class GuiClient extends Application{
 			boats.add(new Boat(list));
 
 
-			((Button) gridPaneArray[row][col]).setBackground(shipBg);
-			((Button) gridPaneArray[row][col + 1]).setBackground(shipBg);
-			((Button) gridPaneArray[row + 1][col]).setBackground(shipBg);
-			((Button) gridPaneArray[row + 1][col + 1]).setBackground(shipBg);
-			((Button) gridPaneArray[row + 2][col + 1]).setBackground(shipBg);
+			((Button) gridPaneArray[row][col]).setBackground(cBG);
+			((Button) gridPaneArray[row][col + 1]).setBackground(cBG);
+			((Button) gridPaneArray[row + 1][col]).setBackground(cBG);
+			((Button) gridPaneArray[row + 1][col + 1]).setBackground(cBG);
+			((Button) gridPaneArray[row + 2][col + 1]).setBackground(cBG);
 
-			((Button) gridPaneArray[row][col]).setBorder(shipBr);
-			((Button) gridPaneArray[row][col + 1]).setBorder(shipBr);
-			((Button) gridPaneArray[row + 1][col]).setBorder(shipBr);
-			((Button) gridPaneArray[row + 1][col + 1]).setBorder(shipBr);
-			((Button) gridPaneArray[row + 2][col + 1]).setBorder(shipBr);
+			((Button) gridPaneArray[row][col]).setBorder(cBR);
+			((Button) gridPaneArray[row][col + 1]).setBorder(cBR);
+			((Button) gridPaneArray[row + 1][col]).setBorder(cBR);
+			((Button) gridPaneArray[row + 1][col + 1]).setBorder(cBR);
+			((Button) gridPaneArray[row + 2][col + 1]).setBorder(cBR);
+
+			if (numCarrier > 0) numCarrier--;
+			carrierText = new Text("Carrier - " + numCarrier);
+			carrier.getChildren().clear();
+			carrier.getChildren().add(carrierText);
 		}
 	}
 
 	private void buildDestroyer(int row, int col) {
-		if (row <= 7 && numDestroyer > 0) {
+		if (row <= 7 && numDestroyer > 0 && checkBounds(row, col)) {
 			ArrayList<Pair<Integer, Integer>> list = new ArrayList<>();
 			list.add(new Pair<>(row, col));
 			list.add(new Pair<>(row + 1, col));
 			list.add(new Pair<>(row + 2, col));
 			boats.add(new Boat(list));
 
-			((Button) gridPaneArray[row][col]).setBackground(shipBg);
-			((Button) gridPaneArray[row + 1][col]).setBackground(shipBg);
-			((Button) gridPaneArray[row + 2][col]).setBackground(shipBg);
+			((Button) gridPaneArray[row][col]).setBackground(dBG);
+			((Button) gridPaneArray[row + 1][col]).setBackground(dBG);
+			((Button) gridPaneArray[row + 2][col]).setBackground(dBG);
 
-			((Button) gridPaneArray[row][col]).setBorder(shipBr);
-			((Button) gridPaneArray[row + 1][col]).setBorder(shipBr);
-			((Button) gridPaneArray[row + 2][col]).setBorder(shipBr);
+			((Button) gridPaneArray[row][col]).setBorder(dBR);
+			((Button) gridPaneArray[row + 1][col]).setBorder(dBR);
+			((Button) gridPaneArray[row + 2][col]).setBorder(dBR);
+
+			if (numDestroyer > 0) numDestroyer--;
+			destroyerText = new Text("Destroyer - " + numDestroyer);
+			destroyer.getChildren().clear();
+			destroyer.getChildren().add(destroyerText);
 
 		}
 	}
 
 	private void buildPatrol(int row, int col) {
-		if (row <= 8 && numPatrol > 0) {
+		if (row <= 8 && numPatrol > 0 && checkBounds(row, col)) {
 			ArrayList<Pair<Integer, Integer>> list = new ArrayList<>();
 			list.add(new Pair<>(row, col));
 			list.add(new Pair<>(row + 1, col));
 			boats.add(new Boat(list));
 
-			((Button) gridPaneArray[row][col]).setBackground(shipBg);
-			((Button) gridPaneArray[row + 1][col]).setBackground(shipBg);
+			((Button) gridPaneArray[row][col]).setBackground(pBG);
+			((Button) gridPaneArray[row + 1][col]).setBackground(pBG);
 
-			((Button) gridPaneArray[row][col]).setBorder(shipBr);
-			((Button) gridPaneArray[row + 1][col]).setBorder(shipBr);
+			((Button) gridPaneArray[row][col]).setBorder(pBR);
+			((Button) gridPaneArray[row + 1][col]).setBorder(pBR);
+
+			if (numPatrol > 0) numPatrol--;
+			patrolText = new Text("Patrol - " + numPatrol);
+			patrol.getChildren().clear();
+			patrol.getChildren().add(patrolText);
 		}
+	}
+
+	private boolean checkBounds(int row, int col) {
+		boolean result = true;
+		for (Boat boat : boats) {
+			for (Pair<Integer, Integer> p : boat.coords) {
+				if (p.getKey() == row && p.getValue() == col) {
+					result = false;
+					break;
+				}
+			}
+		}
+
+		return result;
 	}
 
 
