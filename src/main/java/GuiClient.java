@@ -10,6 +10,7 @@ import javafx.scene.control.TextField;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
 import javafx.util.Pair;
@@ -137,6 +138,14 @@ public class GuiClient extends Application{
 							case "wait": {
 								myTurn.setText(tTurn);
 								shoot.setVisible(false);
+								break;
+							}
+							case "win": {
+								showDialog("YOU WON", primaryStage);
+								break;
+							}
+							case "lose": {
+								showDialog("YOU LOST", primaryStage);
 								break;
 							}
 							default:
@@ -362,6 +371,17 @@ public class GuiClient extends Application{
 		for (Node node : this.grid.getChildren()) {
 			this.gridPaneArray[GridPane.getRowIndex(node)][GridPane.getColumnIndex(node)] = node;
 		}
+	}
+
+	private void showDialog(String msg, Stage primaryStage) {
+		final Stage dialog = new Stage();
+		dialog.initModality(Modality.APPLICATION_MODAL);
+		dialog.initOwner(primaryStage);
+		VBox dialogVbox = new VBox(20);
+		dialogVbox.getChildren().add(new Text(msg));
+		Scene dialogScene = new Scene(dialogVbox, 300, 200);
+		dialog.setScene(dialogScene);
+		dialog.show();
 	}
 
 	private void initializeGridPaneArray2() {
